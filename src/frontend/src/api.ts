@@ -1,6 +1,6 @@
 import { AIChatMessage, AIChatCompletionDelta, AIChatCompletion } from '@microsoft/ai-chat-protocol';
 
-export const apiBaseUrl = import.meta.env.VITE_BACKEND_API_URI || '';
+export const apiBaseUrl = 'https://probable-couscous-qj9g7rxx5q726546-3000.app.github.dev';
 
 export type ChatRequestOptions = {
   messages: AIChatMessage[];
@@ -11,14 +11,16 @@ export type ChatRequestOptions = {
 
 export async function getCompletion(options: ChatRequestOptions) {
   const apiUrl = options.apiUrl || apiBaseUrl;
-
-  // TODO: complete call to Chat API here
-  // const response =
-
+ 
+  const body = JSON.stringify({messages: options.messages});
+  const chatEndPoint = `${apiUrl}/chat`
+  const reqOptions = { method: 'POST', body };
+  const response = await fetch(chatEndPoint, reqOptions);
+  
   if (options.stream) {
-    return getChunksFromResponse<AIChatCompletionDelta>(response as Response, options.chunkIntervalMs);
+    return getChunksFromResponse<AIChatCompletionDelta>(response, options.chunkIntervalMs);
   }
-
+  
   const json: AIChatCompletion = await response.json();
   if (response.status > 299 || !response.ok) {
     throw new Error(json['error'] || 'Unknown error');

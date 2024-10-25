@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename);
 const app: FastifyPluginAsync<AppOptions> = async (fastify, options_): Promise<void> => {
   // Place here your custom code!
 
-  fastify.register(cors);
+  fastify.register(cors, {origin: '*'});
 
   // Do not touch the following lines
 

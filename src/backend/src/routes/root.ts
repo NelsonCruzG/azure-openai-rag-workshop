@@ -6,7 +6,17 @@ const root: FastifyPluginAsync = async (fastify, options): Promise<void> => {
     return { message: 'server up' };
   });
 
-  // TODO: create /chat endpoint
+  fastify.post('/chat', async function (request, reply) {
+    const { messages } = JSON.parse(request.body as string);
+    try {
+      return await fastify.chat.run(messages);
+    } catch (_error: unknown) {
+      const error = _error as Error;
+      fastify.log.error(error);
+      return reply.internalServerError(error.message);
+    }
+  });
+  
 };
 
 export default root;
